@@ -14,7 +14,11 @@ var ReactProductTourDemo = React.createClass({
     var steps = [
       {
         selector: '[data-rpt=title]',
-        message: 'Ciao abbello'
+        message: 'Let\'s point here!'
+      },
+      {
+        selector: '[data-rpt=text]',
+        message: 'Let\'s point to this text now!'
       }
     ]
     return (

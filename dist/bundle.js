@@ -73,7 +73,10 @@
 	  render: function render() {
 	    var steps = [{
 	      selector: '[data-rpt=title]',
-	      message: 'Ciao abbello'
+	      message: 'Let\'s point here!'
+	    }, {
+	      selector: '[data-rpt=text]',
+	      message: 'Let\'s point to this text now!'
 	    }];
 	    return _react2['default'].createElement(
 	      'div',
@@ -19710,6 +19713,7 @@
 	  propTypes: {
 	    steps: _react.PropTypes.array
 	  },
+	  focusElemStyleProps: ['zIndex', 'position'],
 	  getInitialState: function getInitialState() {
 	    return {
 	      steps: this.props.steps,
@@ -19717,31 +19721,101 @@
 	      isTourActive: false,
 	      overlayZindex: 999999,
 	      overlayClass: 'rpt-overlay',
-	      modalClass: 'rpt-modal'
+	      modalClass: 'rpt-modal',
+	      focusElem: null,
+	      oldFocusElemStyle: null
 	    };
 	  },
 	  startTour: function startTour() {
 	    this.setState({
 	      isTourActive: true,
 	      overlayClass: 'rpt-overlay rpt-active',
-	      modalClass: 'rpt-modal rpt-active',
-	      currentStep: -1
+	      modalClass: 'rpt-modal rpt-active'
 	    });
-	    this.nextStep();
+	    var state = {
+	      currentStep: 0,
+	      focusElem: null,
+	      oldFocusElemStyle: null
+	    };
+	    this.focusOnElement(state);
 	  },
 	  nextStep: function nextStep() {
-	    var currStep = this.state.currentStep + 1;
+	    var state = {
+	      currentStep: this.state.currentStep + 1,
+	      focusElem: this.state.focusElem,
+	      oldFocusElemStyle: this.state.oldFocusElemStyle
+	    };
+	    this.focusOnElement(state);
+	  },
+	  focusOnElement: function focusOnElement(nextState) {
 	    var steps = this.state.steps;
-	    if (currStep > this.state.steps.length) {} else {
-	      var focusElem = null;
+	    var currStep = nextState.currentStep;
+	    var oldFocusStyle = nextState.oldFocusElemStyle;
+	    var focusElem = nextState.focusElem;
+	    var prop;
+	    if (currStep >= this.state.steps.length) {} else {
+	      if (focusElem !== null) {
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = this.focusElemStyleProps[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            prop = _step.value;
+
+	            focusElem.style[prop] = oldFocusStyle[prop];
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator['return']) {
+	              _iterator['return']();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+	      }
 	      if (typeof steps[currStep].selector === 'function') {
 	        focusElem = steps[currStep].selector();
 	      } else if (typeof steps[currStep].selector === 'string') {
 	        focusElem = (0, _jquery2['default'])(steps[currStep].selector)[0];
 	      }
 	      if (typeof focusElem !== 'undefined' && focusElem !== null) {
+	        oldFocusStyle = {};
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
+
+	        try {
+	          for (var _iterator2 = this.focusElemStyleProps[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            prop = _step2.value;
+
+	            oldFocusStyle[prop] = focusElem.style[prop];
+	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+	              _iterator2['return']();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
+	          }
+	        }
+
 	        this.setState({
-	          oldFocusElemStyle: focusElem.style
+	          focusElem: focusElem,
+	          oldFocusElemStyle: oldFocusStyle,
+	          currentStep: currStep
 	        });
 	        focusElem.style.zIndex = (this.state.overlayZindex + 1).toString();
 	        focusElem.style.position = 'relative';
@@ -19749,10 +19823,38 @@
 	    }
 	  },
 	  dismissTour: function dismissTour() {
+	    if (this.state.focusElem !== null) {
+	      var _iteratorNormalCompletion3 = true;
+	      var _didIteratorError3 = false;
+	      var _iteratorError3 = undefined;
+
+	      try {
+	        for (var _iterator3 = this.focusElemStyleProps[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	          var prop = _step3.value;
+
+	          this.state.focusElem.style[prop] = this.state.oldFocusElemStyle[prop];
+	        }
+	      } catch (err) {
+	        _didIteratorError3 = true;
+	        _iteratorError3 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+	            _iterator3['return']();
+	          }
+	        } finally {
+	          if (_didIteratorError3) {
+	            throw _iteratorError3;
+	          }
+	        }
+	      }
+	    }
 	    this.setState({
 	      isTourActive: false,
 	      overlayClass: 'rpt-overlay',
-	      modalClass: 'rpt-modal'
+	      modalClass: 'rpt-modal',
+	      focusElem: null,
+	      oldFocusElemStyle: null
 	    });
 	  },
 	  render: function render() {
@@ -19768,10 +19870,14 @@
 	          null,
 	          this.state.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message
 	        ) : null,
-	        _react2['default'].createElement(
+	        this.state.currentStep < this.state.steps.length - 1 ? _react2['default'].createElement(
 	          'button',
 	          { onClick: this.nextStep },
 	          'Next'
+	        ) : _react2['default'].createElement(
+	          'button',
+	          { onClick: this.dismissTour },
+	          'Done'
 	        )
 	      )
 	    );
