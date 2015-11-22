@@ -72,13 +72,13 @@
 	  },
 	  render: function render() {
 	    var steps = [{
-	      selector: '[data-rpt=text]',
-	      message: 'Let\'s point to this text now! lekufg qkwjfg ouqyfg ouwygf ouqeyg ouqyg fouqywg fouqyeg fou geqfou ygqeouf gqoufy gqowufg qoeuyfg oquygf ouqyg fouqw gfouqegfou yegouy geougy eou vgqeoufyg qeouyg voqeuyg oqeurgoqegfouegqrfouegqfougq',
-	      modalPosition: 'top'
-	    }, {
 	      selector: '[data-rpt=title]',
-	      message: 'Let\'s point here!',
+	      message: 'This is a beautiful title!',
 	      modalPosition: 'bottom'
+	    }, {
+	      selector: '[data-rpt=text]',
+	      message: 'Let\'s point here!',
+	      modalPosition: 'top'
 	    }, {
 	      selector: '[data-rpt=image]',
 	      message: 'This is our Logo!',
@@ -19741,7 +19741,8 @@
 	  },
 	  constants: {
 	    MODAL_MAX_WIDTH: 320,
-	    MODAL_FULL_SCREEN_WIDTH: 450
+	    MODAL_FULL_SCREEN_WIDTH: 450,
+	    MODAL_HEIGHT: 100
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.refs['rpt'].style.display = 'none';
@@ -19908,7 +19909,8 @@
 	      var top,
 	          left,
 	          bottom = 'initial',
-	          width;
+	          width,
+	          height = 'auto';
 	      switch (modalPosition) {
 	        case 'bottom':
 	          top = (elemTop + elemH + 15).toString() + 'px';
@@ -19916,9 +19918,10 @@
 	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
 	          break;
 	        case 'top':
-	          top = (elemTop - 125).toString() + 'px';
+	          top = (elemTop - this.constants.MODAL_HEIGHT - 25).toString() + 'px';
 	          left = elemLeft + 5;
 	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          height = this.constants.MODAL_HEIGHT;
 	          break;
 	        case 'right':
 	          top = (elemTop + 10).toString() + 'px';
@@ -19939,6 +19942,7 @@
 	      }
 	      // Set modal position
 	      (0, _jquery2['default'])(this.refs['modal']).width(width);
+	      (0, _jquery2['default'])(this.refs['modal']).height(height);
 	      this.refs['modal'].style.top = top;
 	      this.refs['modal'].style.bottom = bottom;
 	      this.refs['modal'].style.left = Math.floor(left).toString() + 'px';
