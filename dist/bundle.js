@@ -73,10 +73,16 @@
 	  render: function render() {
 	    var steps = [{
 	      selector: '[data-rpt=title]',
-	      message: 'Let\'s point here!'
+	      message: 'Let\'s point here!',
+	      modalPosition: 'bottom'
 	    }, {
 	      selector: '[data-rpt=text]',
-	      message: 'Let\'s point to this text now!'
+	      message: 'Let\'s point to this text now!',
+	      modalPosition: 'top'
+	    }, {
+	      selector: '[data-rpt=image]',
+	      message: 'This is our Logo!',
+	      modalPosition: 'bottom'
 	    }];
 	    return _react2['default'].createElement(
 	      'div',
@@ -19703,7 +19709,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _jquery = __webpack_require__(162);
+	var _jquery = __webpack_require__(160);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -19713,7 +19719,17 @@
 	  propTypes: {
 	    steps: _react.PropTypes.array
 	  },
-	  focusElemStyleProps: ['zIndex', 'position'],
+	  focusElemStyleProps: ['zIndex', 'position', 'borderRadius', 'boxShadow'],
+	  modalPositions: ['top', 'bottom', 'right', 'left'],
+	  arrowPositions: {
+	    'top': 'bottom',
+	    'bottom': 'top',
+	    'right': 'left',
+	    'left': 'right'
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.refs['rpt'].style.display = 'none';
+	  },
 	  getInitialState: function getInitialState() {
 	    return {
 	      steps: this.props.steps,
@@ -19722,11 +19738,13 @@
 	      overlayZindex: 999999,
 	      overlayClass: 'rpt-overlay',
 	      modalClass: 'rpt-modal',
+	      arrowClass: 'rpt-arrow rpt-arrow-bottom',
 	      focusElem: null,
 	      oldFocusElemStyle: null
 	    };
 	  },
 	  startTour: function startTour() {
+	    this.refs['rpt'].style.display = 'block';
 	    this.setState({
 	      isTourActive: true,
 	      overlayClass: 'rpt-overlay rpt-active',
@@ -19819,10 +19837,39 @@
 	        });
 	        focusElem.style.zIndex = (this.state.overlayZindex + 1).toString();
 	        focusElem.style.position = 'relative';
+	        focusElem.style.borderRadius = '5px';
+	        focusElem.style.boxShadow = '0 2px 15px rgba(0,0,0,.8)';
+	      }
+	      var modalPosition = 'top';
+	      if (typeof steps[currStep].modalPosition === 'string') {
+	        if (this.modalPositions.indexOf(steps[currStep].modalPosition) !== -1) {
+	          modalPosition = steps[currStep].modalPosition;
+	        } else {
+	          modalPosition = 'top';
+	        }
+	        var top, left;
+	        switch (modalPosition) {
+	          case 'bottom':
+	            top = (0, _jquery2['default'])(focusElem).offset().top + (0, _jquery2['default'])(focusElem).height() + parseInt((0, _jquery2['default'])(focusElem).css('padding-top').replace("px", "")) + parseInt((0, _jquery2['default'])(focusElem).css('padding-bottom').replace("px", "")) + 15;
+	            left = (0, _jquery2['default'])(focusElem).offset().left + 5;
+	            break;
+	          case 'top':
+	            top = (0, _jquery2['default'])(focusElem).offset().top - 125;
+	            left = (0, _jquery2['default'])(focusElem).offset().left + 5;
+	            break;
+	        }
+	        this.refs['modal'].style.top = Math.floor(top).toString() + 'px';
+	        this.refs['modal'].style.left = Math.floor(left).toString() + 'px';
+	        var arrowClass = 'rpt-arrow rpt-arrow-' + this.arrowPositions[modalPosition];
+	        this.setState({
+	          arrowClass: arrowClass
+	        });
 	      }
 	    }
 	  },
 	  dismissTour: function dismissTour() {
+	    var _this = this;
+
 	    if (this.state.focusElem !== null) {
 	      var _iteratorNormalCompletion3 = true;
 	      var _didIteratorError3 = false;
@@ -19856,15 +19903,19 @@
 	      focusElem: null,
 	      oldFocusElemStyle: null
 	    });
+	    setTimeout(function () {
+	      _this.refs['rpt'].style.display = 'none';
+	    }, 300);
 	  },
 	  render: function render() {
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: 'rpt' },
+	      { ref: 'rpt', className: 'rpt' },
 	      _react2['default'].createElement('div', { className: this.state.overlayClass, onClick: this.dismissTour, style: { zIndex: this.state.overlayZindex } }),
 	      _react2['default'].createElement(
 	        'div',
-	        { className: this.state.modalClass, style: { zIndex: this.state.overlayZindex + 1 } },
+	        { ref: 'modal', className: this.state.modalClass, style: { zIndex: this.state.overlayZindex + 1 } },
+	        _react2['default'].createElement('div', { className: this.state.arrowClass }),
 	        this.state.isTourActive ? _react2['default'].createElement(
 	          'p',
 	          null,
@@ -19888,9 +19939,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 160 */,
-/* 161 */,
-/* 162 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

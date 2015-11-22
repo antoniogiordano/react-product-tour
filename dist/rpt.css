@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   background: black;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .rpt .rpt-modal {
@@ -23,12 +23,56 @@
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
   opacity: 0;
+  min-height: 100px;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-
 .rpt .rpt-modal.rpt-active {
   position: fixed;
   opacity: 1;
   border-radius: 4px;
   background: #f3f3f3;
   padding: 5px;
+}
+
+.rpt .rpt-modal button {
+  border: none;
+  background: #c8c8c8;
+  padding: 5px;
+}
+
+.rpt .rpt-arrow {
+  border: 8px solid #f3f3f3;
+  content: '';
+  position: absolute;
+}
+.rpt .rpt-arrow.rpt-arrow-top {
+  top: -16px;
+  left: 8px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+.rpt .rpt-arrow.rpt-arrow-left {
+  top: 8px;
+  left: -16px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+}
+.rpt .rpt-arrow.rpt-arrow-right {
+  top: 8px;
+  right: -16px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+.rpt .rpt-arrow.rpt-arrow-bottom {
+  bottom: -16px;
+  left: 8px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
 }
