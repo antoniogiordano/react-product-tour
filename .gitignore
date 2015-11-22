@@ -5,3 +5,6 @@ node_modules
 
 #IDE files
 .idea
+
+#OSX files
+.DS_Store
