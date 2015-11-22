@@ -89,7 +89,7 @@ var ReactProductTour = React.createClass({
     this.setState({
       oldFocusElemStyle: oldFocusStyle,
       focusElem: focusElem,
-      currentStep: this.state.currentStep + 1,
+      currentStep: this.state.currentStep + 1
     })
     var state = {
       currentStep: this.state.currentStep + 1,
@@ -154,27 +154,29 @@ var ReactProductTour = React.createClass({
         }
       }
       // Calculate modal position in window
-      var top, left, bottom = 'initial', width, height = 'auto'
+      var top, left, width
+      var bottom = 'initial'
+      var height = 'auto'
       switch (modalPosition) {
         case 'bottom':
           top = (elemTop + elemH + 15).toString() + 'px'
           left = elemLeft + 5
-          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'top':
           top = (elemTop - this.constants.MODAL_HEIGHT - 25).toString() + 'px'
           left = elemLeft + 5
-          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
           height = this.constants.MODAL_HEIGHT
           break
         case 'right':
           top = (elemTop + 10).toString() + 'px'
           left = elemLeft + elemW + 15
-          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'left':
           top = (elemTop + 10).toString() + 'px'
-          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
           left = elemLeft - width - 25
           break
         case 'center':

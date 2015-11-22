@@ -64,6 +64,10 @@
 
 	var _indexJs2 = _interopRequireDefault(_indexJs);
 
+	var _jquery = __webpack_require__(160);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
 	var ReactProductTourDemo = _react2['default'].createClass({
 	  displayName: 'ReactProductTourDemo',
 
@@ -80,7 +84,9 @@
 	      message: 'Let\'s point here!',
 	      modalPosition: 'top'
 	    }, {
-	      selector: '[data-rpt=image]',
+	      selector: function selector() {
+	        return (0, _jquery2['default'])('[data-rpt=image]')[0];
+	      },
 	      message: 'This is our Logo!',
 	      modalPosition: 'right'
 	    }, {
@@ -19906,31 +19912,29 @@
 	        }
 	      }
 	      // Calculate modal position in window
-	      var top,
-	          left,
-	          bottom = 'initial',
-	          width,
-	          height = 'auto';
+	      var top, left, width;
+	      var bottom = 'initial';
+	      var height = 'auto';
 	      switch (modalPosition) {
 	        case 'bottom':
 	          top = (elemTop + elemH + 15).toString() + 'px';
 	          left = elemLeft + 5;
-	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH);
 	          break;
 	        case 'top':
 	          top = (elemTop - this.constants.MODAL_HEIGHT - 25).toString() + 'px';
 	          left = elemLeft + 5;
-	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH);
 	          height = this.constants.MODAL_HEIGHT;
 	          break;
 	        case 'right':
 	          top = (elemTop + 10).toString() + 'px';
 	          left = elemLeft + elemW + 15;
-	          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH);
 	          break;
 	        case 'left':
 	          top = (elemTop + 10).toString() + 'px';
-	          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH);
 	          left = elemLeft - width - 25;
 	          break;
 	        case 'center':

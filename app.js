@@ -5,6 +5,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactProductTour from './index.js'
+import $ from 'jquery'
 
 var ReactProductTourDemo = React.createClass({
   startTour () {
@@ -23,7 +24,7 @@ var ReactProductTourDemo = React.createClass({
         modalPosition: 'top'
       },
       {
-        selector: '[data-rpt=image]',
+        selector: () => $('[data-rpt=image]')[0],
         message: 'This is our Logo!',
         modalPosition: 'right'
       },
