@@ -4,11 +4,16 @@
 
 var express = require('express')
 var app = express()
+var path = require('path')
+var ejs = require('ejs')
 
-app.use(express.static(__dirname));
+app.set('view engine', 'html')
+app.engine('html', ejs.renderFile)
+app.set('views', path.join(__dirname, 'views'))
+app.use(express.static(path.join(__dirname, 'dist')))
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/example1.html')
+  res.render('example1.html')
 })
 
 var server = app.listen(8000, function () {

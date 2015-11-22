@@ -27,11 +27,16 @@
   "homepage": "https://github.com/antoniogiordano/react-product-tour#readme",
   "devDependencies": {
     "babel-loader": "^6.2.0",
+    "ejs": "^2.3.4",
     "express": "^4.13.3",
+    "gulp": "^3.9.0",
+    "gulp-less": "^3.0.5",
+    "gulp-watch": "^4.3.5",
     "react-dom": "^0.14.3",
     "standard": "^5.4.1"
   },
   "dependencies": {
+    "jquery": "^2.1.4",
     "react": "^0.14.3"
   }
 }
