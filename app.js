@@ -13,19 +13,24 @@ var ReactProductTourDemo = React.createClass({
   render () {
     var steps = [
       {
+        selector: '[data-rpt=text]',
+        message: 'Let\'s point to this text now! lekufg qkwjfg ouqyfg ouwygf ouqeyg ouqyg fouqywg fouqyeg fou geqfou ygqeouf gqoufy gqowufg qoeuyfg oquygf ouqyg fouqw gfouqegfou yegouy geougy eou vgqeoufyg qeouyg voqeuyg oqeurgoqegfouegqrfouegqfougq',
+        modalPosition: 'top'
+      },
+      {
         selector: '[data-rpt=title]',
         message: 'Let\'s point here!',
         modalPosition: 'bottom'
       },
       {
-        selector: '[data-rpt=text]',
-        message: 'Let\'s point to this text now!',
-        modalPosition: 'top'
-      },
-      {
         selector: '[data-rpt=image]',
         message: 'This is our Logo!',
-        modalPosition: 'bottom'
+        modalPosition: 'right'
+      },
+      {
+        selector: '[data-rpt=arrow]',
+        message: 'Got it!',
+        modalPosition: 'left'
       }
     ]
     return (

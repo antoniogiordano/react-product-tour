@@ -7,26 +7,37 @@ import $ from 'jquery'
 
 var ReactProductTour = React.createClass({
   propTypes: {
-    steps: PropTypes.array
+    steps: PropTypes.array,
+    enableAutoPositioning: PropTypes.bool
+  },
+  getDefaultProps () {
+    return {
+      steps: [],
+      enableAutoPositioning: true
+    }
   },
   focusElemStyleProps: [
     'zIndex', 'position', 'borderRadius', 'boxShadow'
   ],
   modalPositions: [
-    'top', 'bottom', 'right', 'left'
+    'top', 'bottom', 'right', 'left', 'center'
   ],
   arrowPositions: {
     'top': 'bottom',
     'bottom': 'top',
     'right': 'left',
-    'left': 'right'
+    'left': 'right',
+    'center': 'none'
+  },
+  constants: {
+    MODAL_MAX_WIDTH: 320,
+    MODAL_FULL_SCREEN_WIDTH: 450
   },
   componentDidMount () {
     this.refs['rpt'].style.display = 'none'
   },
   getInitialState () {
     return {
-      steps: this.props.steps,
       currentStep: -1,
       isTourActive: false,
       overlayZindex: 999999,
@@ -37,62 +48,80 @@ var ReactProductTour = React.createClass({
       oldFocusElemStyle: null
     }
   },
+  resizer () {
+    var state = {
+      currentStep: this.state.currentStep,
+      focusElem: this.state.focusElem
+    }
+    this.focusOnElement(state)
+  },
   startTour () {
+    $(window).off('resize', this.resizer)
+    $(window).resize(this.resizer)
     this.refs['rpt'].style.display = 'block'
+    var focusElem = this.getElement(0)
+    var oldFocusStyle = {}
+    for (var prop of this.focusElemStyleProps) {
+      oldFocusStyle[prop] = focusElem.style[prop]
+    }
     this.setState({
       isTourActive: true,
       overlayClass: 'rpt-overlay rpt-active',
-      modalClass: 'rpt-modal rpt-active'
+      modalClass: 'rpt-modal rpt-active',
+      focusElem: focusElem,
+      oldFocusElemStyle: oldFocusStyle,
+      currentStep: 0
     })
     var state = {
       currentStep: 0,
-      focusElem: null,
-      oldFocusElemStyle: null
+      focusElem: focusElem
     }
     this.focusOnElement(state)
   },
   nextStep () {
+    this.restoreElemStyle()
+    var focusElem = this.getElement(this.state.currentStep + 1)
+    var oldFocusStyle = {}
+    for (var prop of this.focusElemStyleProps) {
+      oldFocusStyle[prop] = focusElem.style[prop]
+    }
+    this.setState({
+      oldFocusElemStyle: oldFocusStyle,
+      focusElem: focusElem,
+      currentStep: this.state.currentStep + 1,
+    })
     var state = {
       currentStep: this.state.currentStep + 1,
-      focusElem: this.state.focusElem,
-      oldFocusElemStyle: this.state.oldFocusElemStyle
+      focusElem: focusElem
     }
     this.focusOnElement(state)
   },
+  getElement (currStep) {
+    var steps = this.props.steps
+    var focusElem
+    // Evaluating focused element
+    if (typeof steps[currStep].selector === 'function') {
+      focusElem = steps[currStep].selector()
+    } else if (typeof steps[currStep].selector === 'string') {
+      focusElem = $(steps[currStep].selector)[0]
+    }
+    return focusElem
+  },
   focusOnElement (nextState) {
-    var steps = this.state.steps
+    var steps = this.props.steps
     var currStep = nextState.currentStep
-    var oldFocusStyle = nextState.oldFocusElemStyle
     var focusElem = nextState.focusElem
-    var prop
-    if (currStep >= this.state.steps.length) {
+    if (currStep >= this.props.steps.length) {
 
     } else {
-      if (focusElem !== null) {
-        for (prop of this.focusElemStyleProps) {
-          focusElem.style[prop] = oldFocusStyle[prop]
-        }
-      }
-      if (typeof steps[currStep].selector === 'function') {
-        focusElem = steps[currStep].selector()
-      } else if (typeof steps[currStep].selector === 'string') {
-        focusElem = $(steps[currStep].selector)[0]
-      }
       if (typeof focusElem !== 'undefined' && focusElem !== null) {
-        oldFocusStyle = {}
-        for (prop of this.focusElemStyleProps) {
-          oldFocusStyle[prop] = focusElem.style[prop]
-        }
-        this.setState({
-          focusElem: focusElem,
-          oldFocusElemStyle: oldFocusStyle,
-          currentStep: currStep
-        })
+        // Set focused element new style
         focusElem.style.zIndex = (this.state.overlayZindex + 1).toString()
         focusElem.style.position = 'relative'
         focusElem.style.borderRadius = '5px'
         focusElem.style.boxShadow = '0 2px 15px rgba(0,0,0,.8)'
       }
+      // Evaluating modal position
       var modalPosition = 'top'
       if (typeof steps[currStep].modalPosition === 'string') {
         if (this.modalPositions.indexOf(steps[currStep].modalPosition) !== -1) {
@@ -100,35 +129,81 @@ var ReactProductTour = React.createClass({
         } else {
           modalPosition = 'top'
         }
-        var top, left
-        switch (modalPosition) {
-          case 'bottom':
-            top = $(focusElem).offset().top +
-                $(focusElem).height() +
-                parseInt($(focusElem).css('padding-top').replace("px", "")) +
-                parseInt($(focusElem).css('padding-bottom').replace("px", "")) + 15
-            left = $(focusElem).offset().left + 5
-            break
-          case 'top':
-            top = $(focusElem).offset().top - 125
-            left = $(focusElem).offset().left + 5
-            break
-        }
-        this.refs['modal'].style.top = Math.floor(top).toString() + 'px'
-        this.refs['modal'].style.left = Math.floor(left).toString() + 'px'
-        var arrowClass = 'rpt-arrow rpt-arrow-' + this.arrowPositions[modalPosition]
-        this.setState({
-          arrowClass: arrowClass
-        })
       }
+      var elemTop = $(focusElem).offset().top
+      var elemLeft = $(focusElem).offset().left
+      var elemW = focusElem.offsetWidth
+      var elemH = focusElem.offsetHeight
+      var winW = $(window).width()
+      var winH = $(window).height()
+      // Check and eventually correct modal position (change if bool enabled and for lack of space)
+      if (this.props.enableAutoPositioning) {
+        var positionEnabled = {}
+        positionEnabled['top'] = (elemTop > 150 && (winW - elemLeft > this.constants.MODAL_MAX_WIDTH))
+        positionEnabled['left'] = (elemLeft > this.constants.MODAL_MAX_WIDTH && ($(window).height() - elemTop > 150))
+        positionEnabled['right'] = ((winW - elemLeft - elemW > this.constants.MODAL_MAX_WIDTH) && (winH - elemTop > 150))
+        positionEnabled['bottom'] = ((winH - elemTop - elemH > this.constants.MODAL_MAX_WIDTH) && (winW - elemLeft > this.constants.MODAL_MAX_WIDTH))
+        positionEnabled['center'] = true
+        if (!positionEnabled[modalPosition]) {
+          ['top', 'left', 'right', 'bottom', 'center'].forEach((prop) => {
+            if (!positionEnabled[modalPosition] && positionEnabled[prop]) {
+              modalPosition = prop
+            }
+          })
+        }
+      }
+      // Calculate modal position in window
+      var top, left, bottom = 'initial', width
+      switch (modalPosition) {
+        case 'bottom':
+          top = (elemTop + elemH + 15).toString() + 'px'
+          left = elemLeft + 5
+          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          break
+        case 'top':
+          top = (elemTop - 125).toString() + 'px'
+          left = elemLeft + 5
+          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          break
+        case 'right':
+          top = (elemTop + 10).toString() + 'px'
+          left = elemLeft + elemW + 15
+          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          break
+        case 'left':
+          top = (elemTop + 10).toString() + 'px'
+          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+          left = elemLeft - width - 25
+          break
+        case 'center':
+          bottom = '5px'
+          top = 'initial'
+          left = 5
+          width = winW - 30
+          break
+      }
+      // Set modal position
+      $(this.refs['modal']).width(width)
+      this.refs['modal'].style.top = top
+      this.refs['modal'].style.bottom = bottom
+      this.refs['modal'].style.left = Math.floor(left).toString() + 'px'
+      // Set modal arrow position based on modal position
+      var arrowClass = 'rpt-arrow rpt-arrow-' + this.arrowPositions[modalPosition]
+      this.setState({
+        arrowClass: arrowClass
+      })
     }
   },
-  dismissTour () {
+  restoreElemStyle () {
     if (this.state.focusElem !== null) {
       for (var prop of this.focusElemStyleProps) {
         this.state.focusElem.style[prop] = this.state.oldFocusElemStyle[prop]
       }
     }
+  },
+  dismissTour () {
+    $(window).off('resize', this.resizer)
+    this.restoreElemStyle()
     this.setState({
       isTourActive: false,
       overlayClass: 'rpt-overlay',
@@ -148,11 +223,11 @@ var ReactProductTour = React.createClass({
             <div className={this.state.arrowClass}></div>
             {
               this.state.isTourActive ? (
-                  <p>{this.state.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message}</p>
+                  <p>{this.props.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message}</p>
               ) : null
             }
             {
-                this.state.currentStep < this.state.steps.length - 1 ? (
+                this.state.currentStep < this.props.steps.length - 1 ? (
                   <button onClick={this.nextStep}>Next</button>
                 ) : (
                   <button onClick={this.dismissTour}>Done</button>

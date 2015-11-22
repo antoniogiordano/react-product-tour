@@ -72,17 +72,21 @@
 	  },
 	  render: function render() {
 	    var steps = [{
+	      selector: '[data-rpt=text]',
+	      message: 'Let\'s point to this text now! lekufg qkwjfg ouqyfg ouwygf ouqeyg ouqyg fouqywg fouqyeg fou geqfou ygqeouf gqoufy gqowufg qoeuyfg oquygf ouqyg fouqw gfouqegfou yegouy geougy eou vgqeoufyg qeouyg voqeuyg oqeurgoqegfouegqrfouegqfougq',
+	      modalPosition: 'top'
+	    }, {
 	      selector: '[data-rpt=title]',
 	      message: 'Let\'s point here!',
 	      modalPosition: 'bottom'
 	    }, {
-	      selector: '[data-rpt=text]',
-	      message: 'Let\'s point to this text now!',
-	      modalPosition: 'top'
-	    }, {
 	      selector: '[data-rpt=image]',
 	      message: 'This is our Logo!',
-	      modalPosition: 'bottom'
+	      modalPosition: 'right'
+	    }, {
+	      selector: '[data-rpt=arrow]',
+	      message: 'Got it!',
+	      modalPosition: 'left'
 	    }];
 	    return _react2['default'].createElement(
 	      'div',
@@ -19717,22 +19721,33 @@
 	  displayName: 'ReactProductTour',
 
 	  propTypes: {
-	    steps: _react.PropTypes.array
+	    steps: _react.PropTypes.array,
+	    enableAutoPositioning: _react.PropTypes.bool
+	  },
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      steps: [],
+	      enableAutoPositioning: true
+	    };
 	  },
 	  focusElemStyleProps: ['zIndex', 'position', 'borderRadius', 'boxShadow'],
-	  modalPositions: ['top', 'bottom', 'right', 'left'],
+	  modalPositions: ['top', 'bottom', 'right', 'left', 'center'],
 	  arrowPositions: {
 	    'top': 'bottom',
 	    'bottom': 'top',
 	    'right': 'left',
-	    'left': 'right'
+	    'left': 'right',
+	    'center': 'none'
+	  },
+	  constants: {
+	    MODAL_MAX_WIDTH: 320,
+	    MODAL_FULL_SCREEN_WIDTH: 450
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.refs['rpt'].style.display = 'none';
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      steps: this.props.steps,
 	      currentStep: -1,
 	      isTourActive: false,
 	      overlayZindex: 999999,
@@ -19743,103 +19758,122 @@
 	      oldFocusElemStyle: null
 	    };
 	  },
+	  resizer: function resizer() {
+	    var state = {
+	      currentStep: this.state.currentStep,
+	      focusElem: this.state.focusElem
+	    };
+	    this.focusOnElement(state);
+	  },
 	  startTour: function startTour() {
+	    (0, _jquery2['default'])(window).off('resize', this.resizer);
+	    (0, _jquery2['default'])(window).resize(this.resizer);
 	    this.refs['rpt'].style.display = 'block';
+	    var focusElem = this.getElement(0);
+	    var oldFocusStyle = {};
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+
+	    try {
+	      for (var _iterator = this.focusElemStyleProps[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	        var prop = _step.value;
+
+	        oldFocusStyle[prop] = focusElem.style[prop];
+	      }
+	    } catch (err) {
+	      _didIteratorError = true;
+	      _iteratorError = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion && _iterator['return']) {
+	          _iterator['return']();
+	        }
+	      } finally {
+	        if (_didIteratorError) {
+	          throw _iteratorError;
+	        }
+	      }
+	    }
+
 	    this.setState({
 	      isTourActive: true,
 	      overlayClass: 'rpt-overlay rpt-active',
-	      modalClass: 'rpt-modal rpt-active'
+	      modalClass: 'rpt-modal rpt-active',
+	      focusElem: focusElem,
+	      oldFocusElemStyle: oldFocusStyle,
+	      currentStep: 0
 	    });
 	    var state = {
 	      currentStep: 0,
-	      focusElem: null,
-	      oldFocusElemStyle: null
+	      focusElem: focusElem
 	    };
 	    this.focusOnElement(state);
 	  },
 	  nextStep: function nextStep() {
+	    this.restoreElemStyle();
+	    var focusElem = this.getElement(this.state.currentStep + 1);
+	    var oldFocusStyle = {};
+	    var _iteratorNormalCompletion2 = true;
+	    var _didIteratorError2 = false;
+	    var _iteratorError2 = undefined;
+
+	    try {
+	      for (var _iterator2 = this.focusElemStyleProps[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	        var prop = _step2.value;
+
+	        oldFocusStyle[prop] = focusElem.style[prop];
+	      }
+	    } catch (err) {
+	      _didIteratorError2 = true;
+	      _iteratorError2 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+	          _iterator2['return']();
+	        }
+	      } finally {
+	        if (_didIteratorError2) {
+	          throw _iteratorError2;
+	        }
+	      }
+	    }
+
+	    this.setState({
+	      oldFocusElemStyle: oldFocusStyle,
+	      focusElem: focusElem,
+	      currentStep: this.state.currentStep + 1
+	    });
 	    var state = {
 	      currentStep: this.state.currentStep + 1,
-	      focusElem: this.state.focusElem,
-	      oldFocusElemStyle: this.state.oldFocusElemStyle
+	      focusElem: focusElem
 	    };
 	    this.focusOnElement(state);
 	  },
+	  getElement: function getElement(currStep) {
+	    var steps = this.props.steps;
+	    var focusElem;
+	    // Evaluating focused element
+	    if (typeof steps[currStep].selector === 'function') {
+	      focusElem = steps[currStep].selector();
+	    } else if (typeof steps[currStep].selector === 'string') {
+	      focusElem = (0, _jquery2['default'])(steps[currStep].selector)[0];
+	    }
+	    return focusElem;
+	  },
 	  focusOnElement: function focusOnElement(nextState) {
-	    var steps = this.state.steps;
+	    var steps = this.props.steps;
 	    var currStep = nextState.currentStep;
-	    var oldFocusStyle = nextState.oldFocusElemStyle;
 	    var focusElem = nextState.focusElem;
-	    var prop;
-	    if (currStep >= this.state.steps.length) {} else {
-	      if (focusElem !== null) {
-	        var _iteratorNormalCompletion = true;
-	        var _didIteratorError = false;
-	        var _iteratorError = undefined;
-
-	        try {
-	          for (var _iterator = this.focusElemStyleProps[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            prop = _step.value;
-
-	            focusElem.style[prop] = oldFocusStyle[prop];
-	          }
-	        } catch (err) {
-	          _didIteratorError = true;
-	          _iteratorError = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion && _iterator['return']) {
-	              _iterator['return']();
-	            }
-	          } finally {
-	            if (_didIteratorError) {
-	              throw _iteratorError;
-	            }
-	          }
-	        }
-	      }
-	      if (typeof steps[currStep].selector === 'function') {
-	        focusElem = steps[currStep].selector();
-	      } else if (typeof steps[currStep].selector === 'string') {
-	        focusElem = (0, _jquery2['default'])(steps[currStep].selector)[0];
-	      }
+	    if (currStep >= this.props.steps.length) {} else {
 	      if (typeof focusElem !== 'undefined' && focusElem !== null) {
-	        oldFocusStyle = {};
-	        var _iteratorNormalCompletion2 = true;
-	        var _didIteratorError2 = false;
-	        var _iteratorError2 = undefined;
-
-	        try {
-	          for (var _iterator2 = this.focusElemStyleProps[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	            prop = _step2.value;
-
-	            oldFocusStyle[prop] = focusElem.style[prop];
-	          }
-	        } catch (err) {
-	          _didIteratorError2 = true;
-	          _iteratorError2 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-	              _iterator2['return']();
-	            }
-	          } finally {
-	            if (_didIteratorError2) {
-	              throw _iteratorError2;
-	            }
-	          }
-	        }
-
-	        this.setState({
-	          focusElem: focusElem,
-	          oldFocusElemStyle: oldFocusStyle,
-	          currentStep: currStep
-	        });
+	        // Set focused element new style
 	        focusElem.style.zIndex = (this.state.overlayZindex + 1).toString();
 	        focusElem.style.position = 'relative';
 	        focusElem.style.borderRadius = '5px';
 	        focusElem.style.boxShadow = '0 2px 15px rgba(0,0,0,.8)';
 	      }
+	      // Evaluating modal position
 	      var modalPosition = 'top';
 	      if (typeof steps[currStep].modalPosition === 'string') {
 	        if (this.modalPositions.indexOf(steps[currStep].modalPosition) !== -1) {
@@ -19847,29 +19881,75 @@
 	        } else {
 	          modalPosition = 'top';
 	        }
-	        var top, left;
-	        switch (modalPosition) {
-	          case 'bottom':
-	            top = (0, _jquery2['default'])(focusElem).offset().top + (0, _jquery2['default'])(focusElem).height() + parseInt((0, _jquery2['default'])(focusElem).css('padding-top').replace("px", "")) + parseInt((0, _jquery2['default'])(focusElem).css('padding-bottom').replace("px", "")) + 15;
-	            left = (0, _jquery2['default'])(focusElem).offset().left + 5;
-	            break;
-	          case 'top':
-	            top = (0, _jquery2['default'])(focusElem).offset().top - 125;
-	            left = (0, _jquery2['default'])(focusElem).offset().left + 5;
-	            break;
-	        }
-	        this.refs['modal'].style.top = Math.floor(top).toString() + 'px';
-	        this.refs['modal'].style.left = Math.floor(left).toString() + 'px';
-	        var arrowClass = 'rpt-arrow rpt-arrow-' + this.arrowPositions[modalPosition];
-	        this.setState({
-	          arrowClass: arrowClass
-	        });
 	      }
+	      var elemTop = (0, _jquery2['default'])(focusElem).offset().top;
+	      var elemLeft = (0, _jquery2['default'])(focusElem).offset().left;
+	      var elemW = focusElem.offsetWidth;
+	      var elemH = focusElem.offsetHeight;
+	      var winW = (0, _jquery2['default'])(window).width();
+	      var winH = (0, _jquery2['default'])(window).height();
+	      // Check and eventually correct modal position (change if bool enabled and for lack of space)
+	      if (this.props.enableAutoPositioning) {
+	        var positionEnabled = {};
+	        positionEnabled['top'] = elemTop > 150 && winW - elemLeft > this.constants.MODAL_MAX_WIDTH;
+	        positionEnabled['left'] = elemLeft > this.constants.MODAL_MAX_WIDTH && (0, _jquery2['default'])(window).height() - elemTop > 150;
+	        positionEnabled['right'] = winW - elemLeft - elemW > this.constants.MODAL_MAX_WIDTH && winH - elemTop > 150;
+	        positionEnabled['bottom'] = winH - elemTop - elemH > this.constants.MODAL_MAX_WIDTH && winW - elemLeft > this.constants.MODAL_MAX_WIDTH;
+	        positionEnabled['center'] = true;
+	        if (!positionEnabled[modalPosition]) {
+	          ['top', 'left', 'right', 'bottom', 'center'].forEach(function (prop) {
+	            if (!positionEnabled[modalPosition] && positionEnabled[prop]) {
+	              modalPosition = prop;
+	            }
+	          });
+	        }
+	      }
+	      // Calculate modal position in window
+	      var top,
+	          left,
+	          bottom = 'initial',
+	          width;
+	      switch (modalPosition) {
+	        case 'bottom':
+	          top = (elemTop + elemH + 15).toString() + 'px';
+	          left = elemLeft + 5;
+	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          break;
+	        case 'top':
+	          top = (elemTop - 125).toString() + 'px';
+	          left = elemLeft + 5;
+	          width = Math.min.apply(Math, [winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          break;
+	        case 'right':
+	          top = (elemTop + 10).toString() + 'px';
+	          left = elemLeft + elemW + 15;
+	          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          break;
+	        case 'left':
+	          top = (elemTop + 10).toString() + 'px';
+	          width = Math.min.apply(Math, [winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH]);
+	          left = elemLeft - width - 25;
+	          break;
+	        case 'center':
+	          bottom = '5px';
+	          top = 'initial';
+	          left = 5;
+	          width = winW - 30;
+	          break;
+	      }
+	      // Set modal position
+	      (0, _jquery2['default'])(this.refs['modal']).width(width);
+	      this.refs['modal'].style.top = top;
+	      this.refs['modal'].style.bottom = bottom;
+	      this.refs['modal'].style.left = Math.floor(left).toString() + 'px';
+	      // Set modal arrow position based on modal position
+	      var arrowClass = 'rpt-arrow rpt-arrow-' + this.arrowPositions[modalPosition];
+	      this.setState({
+	        arrowClass: arrowClass
+	      });
 	    }
 	  },
-	  dismissTour: function dismissTour() {
-	    var _this = this;
-
+	  restoreElemStyle: function restoreElemStyle() {
 	    if (this.state.focusElem !== null) {
 	      var _iteratorNormalCompletion3 = true;
 	      var _didIteratorError3 = false;
@@ -19896,6 +19976,12 @@
 	        }
 	      }
 	    }
+	  },
+	  dismissTour: function dismissTour() {
+	    var _this = this;
+
+	    (0, _jquery2['default'])(window).off('resize', this.resizer);
+	    this.restoreElemStyle();
 	    this.setState({
 	      isTourActive: false,
 	      overlayClass: 'rpt-overlay',
@@ -19919,9 +20005,9 @@
 	        this.state.isTourActive ? _react2['default'].createElement(
 	          'p',
 	          null,
-	          this.state.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message
+	          this.props.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message
 	        ) : null,
-	        this.state.currentStep < this.state.steps.length - 1 ? _react2['default'].createElement(
+	        this.state.currentStep < this.props.steps.length - 1 ? _react2['default'].createElement(
 	          'button',
 	          { onClick: this.nextStep },
 	          'Next'

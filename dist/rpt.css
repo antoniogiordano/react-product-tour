@@ -1,3 +1,7 @@
+.rpt {
+  position: fixed;
+}
+
 .rpt .rpt-overlay {
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
@@ -23,8 +27,6 @@
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
   opacity: 0;
-  min-height: 100px;
-  min-width: 240px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -75,4 +77,7 @@
   border-left-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
+}
+.rpt .rpt-arrow.rpt-arrow-none {
+  display: none;
 }
