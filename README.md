@@ -82,8 +82,17 @@ Each step in props.steps array is an object with these properties
          You could specify a String, and it will be used as a jQuery selector.<br>
           If you specify a function (it will be triggered in runtime during the product tour), you must return a valid DOM element (not a jquery one)<br>
           In the first case, i suggest the use of custom tags to select your elements, like:<br>
+          
+```html
           <p data-rpt='firstStep'>Title</p><br>
-          {selector: '[data-rpt=firstStep]'} or {selector: () => {return $('[data-rpt=firstStep]')[0]}}</td>
+```
+```js
+          {selector: '[data-rpt=firstStep]'}
+```
+           or 
+```js
+           {selector: () => {return $('[data-rpt=firstStep]')[0]}}</td>
+```
         </tr>
         <tr>
           <td>message</td>
@@ -95,7 +104,11 @@ Each step in props.steps array is an object with these properties
           <td>modalPosition</td>
           <td>String</td>
           <td>'top'</td>
-          <td>Optional parameter. It could be a value from this array ['top', 'bottom', 'left', 'right', 'center'].<br>
+          <td>Optional parameter. It could be a value from this array 
+```js
+          ['top', 'bottom', 'left', 'right', 'center']
+```
+          <br>
           It represents the position of the modal relative to the focused element of the step</td>
         </tr>
     </tbody>
@@ -116,7 +129,11 @@ Public methods of rpt
         <tr>
           <td>startTour()</td>
           <td>You call this method when you want to start your product tour.<br>
-          Add a ref tag in your ReactProductTour component like ref='rpt' and call it from your parent component with this.refs['rpt'].startTour()</td>
+          Add a ref tag in your ReactProductTour component like ref='rpt' and call it from your parent component with
+```js
+           this.refs['rpt'].startTour()
+```
+           </td>
         </tr>
     </tbody>
 </table>
