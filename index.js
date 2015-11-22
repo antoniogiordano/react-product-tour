@@ -12,11 +12,11 @@ var ReactProductTour = React.createClass({
   getInitialState () {
     return {
       steps: this.props.steps,
-      currentStep: 0,
-      isTourActive: true,
+      currentStep: -1,
+      isTourActive: false,
       overlayZindex: 999999,
       overlayClass: 'rpt-overlay',
-      modalClass: 'rpt-modal',
+      modalClass: 'rpt-modal'
     }
   },
   startTour () {
@@ -24,11 +24,12 @@ var ReactProductTour = React.createClass({
       isTourActive: true,
       overlayClass: 'rpt-overlay rpt-active',
       modalClass: 'rpt-modal rpt-active',
+      currentStep: -1
     })
     this.nextStep()
   },
   nextStep () {
-    var currStep = this.state.currentStep
+    var currStep = this.state.currentStep + 1
     var steps = this.state.steps
     if (currStep > this.state.steps.length) {
 
@@ -52,7 +53,7 @@ var ReactProductTour = React.createClass({
     this.setState({
       isTourActive: false,
       overlayClass: 'rpt-overlay',
-      modalClass: 'rpt-modal',
+      modalClass: 'rpt-modal'
     })
   },
   render () {
@@ -60,8 +61,12 @@ var ReactProductTour = React.createClass({
         <div className='rpt'>
           <div className={this.state.overlayClass} onClick={this.dismissTour} style={{zIndex: this.state.overlayZindex}} />
           <div className={this.state.modalClass} style={{zIndex: this.state.overlayZindex + 1}}>
-            <p>{this.state.steps[this.state.currentStep].message}</p>
-            <button>Next</button>
+            {
+              this.state.isTourActive ? (
+                  <p>{this.state.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message}</p>
+              ) : null
+            }
+            <button onClick={this.nextStep}>Next</button>
           </div>
         </div>
       )

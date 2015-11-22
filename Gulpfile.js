@@ -1,4 +1,4 @@
-var gulp = require('gulp')
+/* var gulp = require('gulp')
 var less = require('gulp-less')
 var util = require('gulp-util')
 
@@ -14,4 +14,4 @@ gulp.watch('src/rpt.less', ['less'])
 
 gulp.task('default', function() {
 
-});
+});*/

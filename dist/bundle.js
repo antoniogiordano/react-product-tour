@@ -19713,8 +19713,8 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      steps: this.props.steps,
-	      currentStep: 0,
-	      isTourActive: true,
+	      currentStep: -1,
+	      isTourActive: false,
 	      overlayZindex: 999999,
 	      overlayClass: 'rpt-overlay',
 	      modalClass: 'rpt-modal'
@@ -19724,12 +19724,13 @@
 	    this.setState({
 	      isTourActive: true,
 	      overlayClass: 'rpt-overlay rpt-active',
-	      modalClass: 'rpt-modal rpt-active'
+	      modalClass: 'rpt-modal rpt-active',
+	      currentStep: -1
 	    });
 	    this.nextStep();
 	  },
 	  nextStep: function nextStep() {
-	    var currStep = this.state.currentStep;
+	    var currStep = this.state.currentStep + 1;
 	    var steps = this.state.steps;
 	    if (currStep > this.state.steps.length) {} else {
 	      var focusElem = null;
@@ -19762,14 +19763,14 @@
 	      _react2['default'].createElement(
 	        'div',
 	        { className: this.state.modalClass, style: { zIndex: this.state.overlayZindex + 1 } },
-	        _react2['default'].createElement(
+	        this.state.isTourActive ? _react2['default'].createElement(
 	          'p',
 	          null,
-	          this.state.steps[this.state.currentStep].message
-	        ),
+	          this.state.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message
+	        ) : null,
 	        _react2['default'].createElement(
 	          'button',
-	          null,
+	          { onClick: this.nextStep },
 	          'Next'
 	        )
 	      )
