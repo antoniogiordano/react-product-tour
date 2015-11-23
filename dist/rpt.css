@@ -92,14 +92,22 @@
 .rpt .rpt-button-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.rpt .rpt-steps-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .rpt .rpt-steps-icons-container {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .rpt .rpt-step-icon {
@@ -108,7 +116,7 @@
   height: 12px;
   border-radius: 6px;
   background: #ccc;
-  margin: 3px;
+  margin: 9px 5px;
   cursor: pointer;
 }
 

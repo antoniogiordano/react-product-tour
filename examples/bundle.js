@@ -74,6 +74,9 @@
 	  startTour: function startTour() {
 	    this.refs['rpt'].startTour();
 	  },
+	  tourDismissed: function tourDismissed() {
+	    window.alert('Product Tour ended');
+	  },
 	  render: function render() {
 	    var steps = [{
 	      selector: '[data-rpt=title]',
@@ -88,7 +91,10 @@
 	        return (0, _jquery2['default'])('[data-rpt=image]')[0];
 	      },
 	      message: 'This is our Logo!',
-	      modalPosition: 'right'
+	      modalPosition: 'right',
+	      onChange: function onChange(index) {
+	        window.alert('this alert has been triggered by RPT! We are at the ' + (index + 1).toString() + 'th step!');
+	      }
 	    }, {
 	      selector: '[data-rpt=arrow]',
 	      message: 'Got it!',
@@ -97,7 +103,7 @@
 	    return _react2['default'].createElement(
 	      'div',
 	      null,
-	      _react2['default'].createElement(_indexJs2['default'], { ref: 'rpt', steps: steps }),
+	      _react2['default'].createElement(_indexJs2['default'], { ref: 'rpt', steps: steps, onTourEnd: this.tourDismissed }),
 	      _react2['default'].createElement(
 	        'button',
 	        { onClick: this.startTour },
@@ -19728,12 +19734,14 @@
 
 	  propTypes: {
 	    steps: _react.PropTypes.array,
-	    enableAutoPositioning: _react.PropTypes.bool
+	    enableAutoPositioning: _react.PropTypes.bool,
+	    onTourEnd: _react.PropTypes['function']
 	  },
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      steps: [],
-	      enableAutoPositioning: true
+	      enableAutoPositioning: true,
+	      onTourEnd: function onTourEnd() {}
 	    };
 	  },
 	  focusElemStyleProps: ['zIndex', 'position', 'borderRadius', 'boxShadow'],
@@ -19826,6 +19834,9 @@
 	    this.goToStep(this.state.currentStep - 1);
 	  },
 	  goToStep: function goToStep(index) {
+	    if (typeof this.props.steps[index].onChange === 'function') {
+	      this.props.steps[index].onChange(index);
+	    }
 	    this.restoreElemStyle();
 	    var focusElem = this.getElement(index);
 	    var oldFocusStyle = {};
@@ -20009,6 +20020,7 @@
 	    setTimeout(function () {
 	      _this.refs['rpt'].style.display = 'none';
 	    }, 300);
+	    this.props.onTourEnd();
 	  },
 	  getIconClassName: function getIconClassName(index) {
 	    return this.state.currentStep === index ? 'rpt-step-icon rpt-step-icon-active' : 'rpt-step-icon';
@@ -20036,16 +20048,20 @@
 	            'Prev'
 	          ) : null,
 	          _react2['default'].createElement(
-	            'button',
-	            { className: 'rpt-skip-button', onClick: this.dismissTour },
-	            'Skip'
-	          ),
-	          _react2['default'].createElement(
 	            'div',
-	            { className: 'rpt-steps-icons-container' },
-	            this.props.steps.map(function (step, index) {
-	              return _react2['default'].createElement('div', { onClick: this.goToStep.bind(this, index), className: this.getIconClassName.bind(this, index)(), key: index });
-	            }, this)
+	            { className: 'rpt-steps-container' },
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'rpt-steps-icons-container' },
+	              this.props.steps.map(function (step, index) {
+	                return _react2['default'].createElement('div', { onClick: this.goToStep.bind(this, index), className: this.getIconClassName.bind(this, index)(), key: index });
+	              }, this)
+	            ),
+	            _react2['default'].createElement(
+	              'button',
+	              { className: 'rpt-skip-button', onClick: this.dismissTour },
+	              'Skip'
+	            )
 	          ),
 	          this.state.currentStep < this.props.steps.length - 1 ? _react2['default'].createElement(
 	            'button',

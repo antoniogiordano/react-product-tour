@@ -11,6 +11,9 @@ var ReactProductTourDemo = React.createClass({
   startTour () {
     this.refs['rpt'].startTour()
   },
+  tourDismissed () {
+    window.alert('Product Tour ended')
+  },
   render () {
     var steps = [
       {
@@ -26,7 +29,10 @@ var ReactProductTourDemo = React.createClass({
       {
         selector: () => $('[data-rpt=image]')[0],
         message: 'This is our Logo!',
-        modalPosition: 'right'
+        modalPosition: 'right',
+        onChange (index) {
+          window.alert('this alert has been triggered by RPT! We are at the ' + (index + 1).toString() + 'th step!')
+        }
       },
       {
         selector: '[data-rpt=arrow]',
@@ -36,7 +42,7 @@ var ReactProductTourDemo = React.createClass({
     ]
     return (
       <div>
-        <ReactProductTour ref='rpt' steps={steps} />
+        <ReactProductTour ref='rpt' steps={steps} onTourEnd={this.tourDismissed} />
         <button onClick={this.startTour}>Start Tour</button>
       </div>
     )

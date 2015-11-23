@@ -7,6 +7,13 @@ Easy step-based product tour component written in React
 
 ## Development status
 
+### 2015/11/23 Released Beta Version 0.1.3 on npm
+
+Added:
+ Prev button to go to the previous step.
+ Skip button to exit the product tour
+ Steps circle icons to navigate through the product tour
+
 ### 2015/11/22 Released Beta Version 0.1.0 on npm
 
  

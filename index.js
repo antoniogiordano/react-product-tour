@@ -8,12 +8,14 @@ import $ from 'jquery'
 var ReactProductTour = React.createClass({
   propTypes: {
     steps: PropTypes.array,
-    enableAutoPositioning: PropTypes.bool
+    enableAutoPositioning: PropTypes.bool,
+    onTourEnd: PropTypes.function
   },
   getDefaultProps () {
     return {
       steps: [],
-      enableAutoPositioning: true
+      enableAutoPositioning: true,
+      onTourEnd () {}
     }
   },
   focusElemStyleProps: [
@@ -88,6 +90,9 @@ var ReactProductTour = React.createClass({
     this.goToStep(this.state.currentStep - 1)
   },
   goToStep (index) {
+    if (typeof this.props.steps[index].onChange === 'function') {
+      this.props.steps[index].onChange(index)
+    }
     this.restoreElemStyle()
     var focusElem = this.getElement(index)
     var oldFocusStyle = {}
@@ -228,6 +233,7 @@ var ReactProductTour = React.createClass({
     setTimeout(() => {
       this.refs['rpt'].style.display = 'none'
     }, 300)
+    this.props.onTourEnd()
   },
   getIconClassName (index) {
     return this.state.currentStep === index ? 'rpt-step-icon rpt-step-icon-active' : 'rpt-step-icon'
@@ -251,15 +257,17 @@ var ReactProductTour = React.createClass({
                       null
                   )
                 }
-                <button className='rpt-skip-button' onClick={this.dismissTour}>Skip</button>
-                <div className='rpt-steps-icons-container'>
-                  {
+                <div className='rpt-steps-container'>
+                  <div className='rpt-steps-icons-container'>
+                    {
                       this.props.steps.map(function (step, index) {
                         return (
                             <div onClick={this.goToStep.bind(this, index)} className={this.getIconClassName.bind(this, index)()} key={index}></div>
                         )
                       }, this)
-                  }
+                    }
+                  </div>
+                  <button className='rpt-skip-button' onClick={this.dismissTour}>Skip</button>
                 </div>
                 {
                   this.state.currentStep < this.props.steps.length - 1 ? (
