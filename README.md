@@ -7,7 +7,7 @@ Easy step-based product tour component written in React
 
 ## Development status
 
-### 2015/11/23 Released STABLE Version 1.0.0 on npm
+### 2015/11/23 Released STABLE Version 1.0.1 on npm
 
 Added:
   Optional Callback onChange at every step of the product tour
