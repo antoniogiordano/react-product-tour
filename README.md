@@ -4,6 +4,7 @@
 Status](https://travis-ci.org/antoniogiordano/react-product-tour.svg)](https://travis-ci.org/antoniogiordano/react-product-tour)
 
 Easy step-based product tour component written in React
+Usefull to create websites product tours, webapps tutorial, and every kind of step-based process to explain something in a site
 
 ## Development status
 
