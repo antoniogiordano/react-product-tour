@@ -30,54 +30,88 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: rgba(0,0,0,0.5) 0 0 6px;
+  padding: 20px;
 }
 .rpt .rpt-modal.rpt-active {
   position: fixed;
   opacity: 1;
   border-radius: 4px;
-  background: #f3f3f3;
-  padding: 5px;
+  background: #fff;
 }
 
 .rpt .rpt-modal button {
   border: none;
-  background: #c8c8c8;
-  padding: 5px;
+  background: #dd3333;
+  padding: 8px 12px;
+  color: #ffffff;
+  border-radius: 3px;
+}
+
+.rpt .rpt-modal button.rpt-skip-button {
+  background: #ccc;
 }
 
 .rpt .rpt-arrow {
-  border: 8px solid #f3f3f3;
+  border: 16px solid #fff;
   content: '';
   position: absolute;
 }
 .rpt .rpt-arrow.rpt-arrow-top {
-  top: -16px;
-  left: 8px;
+  top: -32px;
+  left: 32px;
   border-top-color: transparent;
   border-right-color: transparent;
   border-left-color: transparent;
 }
 .rpt .rpt-arrow.rpt-arrow-left {
-  top: 8px;
-  left: -16px;
+  top: 32px;
+  left: -32px;
   border-top-color: transparent;
   border-left-color: transparent;
   border-bottom-color: transparent;
 }
 .rpt .rpt-arrow.rpt-arrow-right {
-  top: 8px;
-  right: -16px;
+  top: 32px;
+  right: -32px;
   border-top-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
 }
 .rpt .rpt-arrow.rpt-arrow-bottom {
-  bottom: -16px;
-  left: 8px;
+  bottom: -32px;
+  left: 32px;
   border-left-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
 }
 .rpt .rpt-arrow.rpt-arrow-none {
   display: none;
+}
+
+.rpt .rpt-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.rpt .rpt-steps-icons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.rpt .rpt-step-icon {
+  width: 12px;
+  content: '';
+  height: 12px;
+  border-radius: 6px;
+  background: #ccc;
+  margin: 3px;
+  cursor: pointer;
+}
+
+.rpt .rpt-step-icon.rpt-step-icon-active {
+  background: #dd3333;
 }

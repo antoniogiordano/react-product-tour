@@ -32,7 +32,9 @@ var ReactProductTour = React.createClass({
   constants: {
     MODAL_MAX_WIDTH: 320,
     MODAL_FULL_SCREEN_WIDTH: 450,
-    MODAL_HEIGHT: 100
+    MODAL_HEIGHT: 150,
+    MODAL_ARROW_W: 16,
+    DISTANCE_FROM_ELEM: 5
   },
   componentDidMount () {
     this.refs['rpt'].style.display = 'none'
@@ -80,8 +82,14 @@ var ReactProductTour = React.createClass({
     this.focusOnElement(state)
   },
   nextStep () {
+    this.goToStep(this.state.currentStep + 1)
+  },
+  prevStep () {
+    this.goToStep(this.state.currentStep - 1)
+  },
+  goToStep (index) {
     this.restoreElemStyle()
-    var focusElem = this.getElement(this.state.currentStep + 1)
+    var focusElem = this.getElement(index)
     var oldFocusStyle = {}
     for (var prop of this.focusElemStyleProps) {
       oldFocusStyle[prop] = focusElem.style[prop]
@@ -89,10 +97,10 @@ var ReactProductTour = React.createClass({
     this.setState({
       oldFocusElemStyle: oldFocusStyle,
       focusElem: focusElem,
-      currentStep: this.state.currentStep + 1
+      currentStep: index
     })
     var state = {
-      currentStep: this.state.currentStep + 1,
+      currentStep: index,
       focusElem: focusElem
     }
     this.focusOnElement(state)
@@ -120,7 +128,7 @@ var ReactProductTour = React.createClass({
         focusElem.style.zIndex = (this.state.overlayZindex + 1).toString()
         focusElem.style.position = 'relative'
         focusElem.style.borderRadius = '5px'
-        focusElem.style.boxShadow = '0 2px 15px rgba(0,0,0,.8)'
+        focusElem.style.boxShadow = '0 0 6px rgba(0,0,0,.5)'
       }
       // Evaluating modal position
       var modalPosition = 'top'
@@ -157,33 +165,34 @@ var ReactProductTour = React.createClass({
       var top, left, width
       var bottom = 'initial'
       var height = 'auto'
+      var modalPad = parseInt($(this.refs['modal']).css('padding-left').replace('px', ''), 10) * 2
       switch (modalPosition) {
         case 'bottom':
-          top = (elemTop + elemH + 15).toString() + 'px'
+          top = (elemTop + elemH + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM).toString() + 'px'
           left = elemLeft + 5
-          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
+          width = Math.min(winW - modalPad - 30, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'top':
-          top = (elemTop - this.constants.MODAL_HEIGHT - 25).toString() + 'px'
+          top = (elemTop - this.constants.MODAL_HEIGHT - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM).toString() + 'px'
           left = elemLeft + 5
-          width = Math.min(winW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
-          height = this.constants.MODAL_HEIGHT
+          width = Math.min(winW - modalPad - 30, this.constants.MODAL_FULL_SCREEN_WIDTH)
+          height = this.constants.MODAL_HEIGHT - modalPad
           break
         case 'right':
-          top = (elemTop + 10).toString() + 'px'
-          left = elemLeft + elemW + 15
-          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
+          top = (elemTop - 5).toString() + 'px'
+          left = elemLeft + elemW + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM
+          width = Math.min(winW - elemLeft - elemW - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad - 20, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'left':
-          top = (elemTop + 10).toString() + 'px'
-          width = Math.min(winW - elemW - 40, this.constants.MODAL_FULL_SCREEN_WIDTH)
-          left = elemLeft - width - 25
+          top = (elemTop - 5).toString() + 'px'
+          width = Math.min(elemLeft - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad - 20, this.constants.MODAL_FULL_SCREEN_WIDTH)
+          left = elemLeft - width - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad
           break
         case 'center':
           bottom = '5px'
           top = 'initial'
-          left = 5
-          width = winW - 30
+          left = 10
+          width = winW - modalPad - 20
           break
       }
       // Set modal position
@@ -220,6 +229,9 @@ var ReactProductTour = React.createClass({
       this.refs['rpt'].style.display = 'none'
     }, 300)
   },
+  getIconClassName (index) {
+    return this.state.currentStep === index ? 'rpt-step-icon rpt-step-icon-active' : 'rpt-step-icon'
+  },
   render () {
     return (
         <div ref='rpt' className='rpt'>
@@ -231,13 +243,32 @@ var ReactProductTour = React.createClass({
                   <p>{this.props.steps[this.state.currentStep > -1 ? this.state.currentStep : 0].message}</p>
               ) : null
             }
-            {
-                this.state.currentStep < this.props.steps.length - 1 ? (
-                  <button onClick={this.nextStep}>Next</button>
-                ) : (
-                  <button onClick={this.dismissTour}>Done</button>
-                )
-            }
+              <div className='rpt-button-container'>
+                {
+                  this.state.currentStep > 0 ? (
+                      <button onClick={this.prevStep}>Prev</button>
+                  ) : (
+                      null
+                  )
+                }
+                <button className='rpt-skip-button' onClick={this.dismissTour}>Skip</button>
+                <div className='rpt-steps-icons-container'>
+                  {
+                      this.props.steps.map(function(step, index) {
+                        return (
+                            <div onClick={this.goToStep.bind(this, index)} className={this.getIconClassName.bind(this, index)()} key={index}></div>
+                        )
+                      }, this)
+                  }
+                </div>
+                {
+                  this.state.currentStep < this.props.steps.length - 1 ? (
+                      <button onClick={this.nextStep}>Next</button>
+                  ) : (
+                      <button onClick={this.dismissTour}>Done</button>
+                  )
+                }
+              </div>
           </div>
         </div>
       )
