@@ -38,12 +38,17 @@ var ReactProductTourDemo = React.createClass({
         selector: '[data-rpt=arrow]',
         message: 'Got it!',
         modalPosition: 'left'
+      },
+      {
+        selector: '[data-rpt=bottom]',
+        message: 'Go to the bottom',
+        modalPosition: 'top'
       }
     ]
     return (
       <div>
         <ReactProductTour ref='rpt' steps={steps} onTourEnd={this.tourDismissed} />
-        <button onClick={this.startTour}>Start Tour</button>
+        <button style={{fontSize: '18px'}} onClick={this.startTour}>Start Tour</button>
       </div>
     )
   }

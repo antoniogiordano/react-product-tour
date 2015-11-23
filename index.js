@@ -63,6 +63,8 @@ var ReactProductTour = React.createClass({
   startTour () {
     $(window).off('resize', this.resizer)
     $(window).resize(this.resizer)
+    $(window).off('scroll', this.resizer)
+    $(window).scroll(this.resizer)
     this.refs['rpt'].style.display = 'block'
     var focusElem = this.getElement(0)
     var oldFocusStyle = {}
@@ -72,16 +74,9 @@ var ReactProductTour = React.createClass({
     this.setState({
       isTourActive: true,
       overlayClass: 'rpt-overlay rpt-active',
-      modalClass: 'rpt-modal rpt-active',
-      focusElem: focusElem,
-      oldFocusElemStyle: oldFocusStyle,
-      currentStep: 0
+      modalClass: 'rpt-modal rpt-active'
     })
-    var state = {
-      currentStep: 0,
-      focusElem: focusElem
-    }
-    this.focusOnElement(state)
+    this.goToStep(0)
   },
   nextStep () {
     this.goToStep(this.state.currentStep + 1)
@@ -108,7 +103,10 @@ var ReactProductTour = React.createClass({
       currentStep: index,
       focusElem: focusElem
     }
-    this.focusOnElement(state)
+    var ret = this.focusOnElement(state)
+    if (typeof ret.top !== 'undefined') {
+      $('html, body').animate({scrollTop: ret.top}, 200)
+    }
   },
   getElement (currStep) {
     var steps = this.props.steps
@@ -125,6 +123,7 @@ var ReactProductTour = React.createClass({
     var steps = this.props.steps
     var currStep = nextState.currentStep
     var focusElem = nextState.focusElem
+    var ret = {}
     if (currStep >= this.props.steps.length) {
 
     } else {
@@ -171,27 +170,29 @@ var ReactProductTour = React.createClass({
       var bottom = 'initial'
       var height = 'auto'
       var modalPad = parseInt($(this.refs['modal']).css('padding-left').replace('px', ''), 10) * 2
+      var scrollTop = window.scrollY
+      var scrollLeft = window.scrollX
       switch (modalPosition) {
         case 'bottom':
-          top = (elemTop + elemH + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM).toString() + 'px'
-          left = elemLeft + 5
+          top = (elemTop + elemH + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM - scrollTop).toString() + 'px'
+          left = elemLeft + 5 - scrollLeft
           width = Math.min(winW - modalPad - 30, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'top':
-          top = (elemTop - this.constants.MODAL_HEIGHT - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM).toString() + 'px'
-          left = elemLeft + 5
+          top = (elemTop - this.constants.MODAL_HEIGHT - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - scrollTop).toString() + 'px'
+          left = elemLeft + 5 - scrollLeft
           width = Math.min(winW - modalPad - 30, this.constants.MODAL_FULL_SCREEN_WIDTH)
           height = this.constants.MODAL_HEIGHT - modalPad
           break
         case 'right':
-          top = (elemTop - 5).toString() + 'px'
-          left = elemLeft + elemW + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM
+          top = (elemTop - 5 - scrollTop).toString() + 'px'
+          left = elemLeft + elemW + this.constants.MODAL_ARROW_W + this.constants.DISTANCE_FROM_ELEM - scrollLeft
           width = Math.min(winW - elemLeft - elemW - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad - 20, this.constants.MODAL_FULL_SCREEN_WIDTH)
           break
         case 'left':
-          top = (elemTop - 5).toString() + 'px'
+          top = (elemTop - 5 - scrollTop).toString() + 'px'
           width = Math.min(elemLeft - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad - 20, this.constants.MODAL_FULL_SCREEN_WIDTH)
-          left = elemLeft - width - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad
+          left = elemLeft - width - this.constants.MODAL_ARROW_W - this.constants.DISTANCE_FROM_ELEM - modalPad - scrollLeft
           break
         case 'center':
           bottom = '5px'
@@ -211,7 +212,11 @@ var ReactProductTour = React.createClass({
       this.setState({
         arrowClass: arrowClass
       })
+      ret = {
+        top: top !== 'initial' ? Math.min(parseInt(top.replace('px', ''), 10), elemTop) - 20 : elemTop - 20
+      }
     }
+    return ret
   },
   restoreElemStyle () {
     if (this.state.focusElem !== null) {
@@ -222,6 +227,7 @@ var ReactProductTour = React.createClass({
   },
   dismissTour () {
     $(window).off('resize', this.resizer)
+    $(window).off('scroll', this.resizer)
     this.restoreElemStyle()
     this.setState({
       isTourActive: false,
