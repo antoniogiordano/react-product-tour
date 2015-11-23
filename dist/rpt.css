@@ -42,14 +42,21 @@
 
 .rpt .rpt-modal button {
   border: none;
-  background: #dd3333;
+  background: #d33;
   padding: 8px 12px;
-  color: #ffffff;
+  color: #fff;
   border-radius: 3px;
+  cursor: pointer;
+}
+.rpt .rpt-modal button:hover {
+  background: #d99;
 }
 
 .rpt .rpt-modal button.rpt-skip-button {
   background: #ccc;
+}
+.rpt .rpt-modal button.rpt-skip-button:hover {
+  background: #666;
 }
 
 .rpt .rpt-arrow {
@@ -118,6 +125,9 @@
   background: #ccc;
   margin: 9px 5px;
   cursor: pointer;
+}
+.rpt .rpt-step-icon:hover {
+  background: #d99;
 }
 
 .rpt .rpt-step-icon.rpt-step-icon-active {

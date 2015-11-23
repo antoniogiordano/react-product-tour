@@ -19735,7 +19735,7 @@
 	  propTypes: {
 	    steps: _react.PropTypes.array,
 	    enableAutoPositioning: _react.PropTypes.bool,
-	    onTourEnd: _react.PropTypes['function']
+	    onTourEnd: _react.PropTypes.func
 	  },
 	  getDefaultProps: function getDefaultProps() {
 	    return {

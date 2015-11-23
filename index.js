@@ -9,7 +9,7 @@ var ReactProductTour = React.createClass({
   propTypes: {
     steps: PropTypes.array,
     enableAutoPositioning: PropTypes.bool,
-    onTourEnd: PropTypes.function
+    onTourEnd: PropTypes.func
   },
   getDefaultProps () {
     return {
