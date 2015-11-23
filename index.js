@@ -254,7 +254,7 @@ var ReactProductTour = React.createClass({
                 <button className='rpt-skip-button' onClick={this.dismissTour}>Skip</button>
                 <div className='rpt-steps-icons-container'>
                   {
-                      this.props.steps.map(function(step, index) {
+                      this.props.steps.map(function (step, index) {
                         return (
                             <div onClick={this.goToStep.bind(this, index)} className={this.getIconClassName.bind(this, index)()} key={index}></div>
                         )
