@@ -30,6 +30,8 @@ then
 ReactDOM.render(<ReactProductTour ref='rpt' steps={steps} />, document.getElementById('rpt'))
 ```
 
+And then include the dist/rpt.css in your HTML file!
+
 ## API
 
 ### react-product-tour props
