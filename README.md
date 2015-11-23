@@ -7,6 +7,12 @@ Easy step-based product tour component written in React
 
 ## Development status
 
+### 2015/11/23 Released STABLE Version 1.0.0 on npm
+
+Added:
+  Optional Callback onChange at every step of the product tour
+  Optional Callback onTourEnd at the end of the product Tour
+
 ### 2015/11/23 Released Beta Version 0.1.3 on npm
 
 Added:
@@ -39,6 +45,12 @@ ReactDOM.render(<ReactProductTour ref='rpt' steps={steps} />, document.getElemen
 
 And then include the dist/rpt.css in your HTML file!
 
+
+## Examples
+
+Open examples/ directory and open example1.html with a browser to test the component 
+
+
 ## API
 
 ### react-product-tour props
@@ -65,6 +77,12 @@ And then include the dist/rpt.css in your HTML file!
           <td>true</td>
           <td>If set to false, the modal position specified for every steps will be forced to that, even if there isn't enough space on the window.<br>
           Otherwise, the modal will be auto positioned where is enoguh space, or fixed to the bottom of the screen</td>
+        </tr>
+        <tr>
+          <td>onTourEnd</td>
+          <td>Function</td>
+          <td></td>
+          <td>Optional. This prop is a callback for product tour end or exit. It is called every time the user arrives to the end or exit from the product tour.</td>
         </tr>
     </tbody>
 </table>
@@ -109,6 +127,14 @@ Each step in props.steps array is an object with these properties
           <td>Optional parameter. It could be a value from this array<br>
           ['top', 'bottom', 'left', 'right', 'center']<br>
           It represents the position of the modal relative to the focused element of the step</td>
+        </tr>
+        <tr>
+          <td>onChange (index)</td>
+          <td>Function</td>
+          <td></td>
+          <td>Optional property. This parameter is a callback which is called every time the user arrives at this step.<br>
+          An index parameter is passed to the function representing the current index step in props.steps array passed to the RPT component 
+          </td>
         </tr>
     </tbody>
 </table>
