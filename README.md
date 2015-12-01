@@ -8,6 +8,10 @@ Usefull to create websites product tours, webapps tutorial, and every kind of st
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
+## Live Demo
+
+http://opensource.getapper.com/react-product-tour/example1.html
+
 ## Development status
 
 ### 2015/11/23 Released STABLE Version 1.0.1 on npm
