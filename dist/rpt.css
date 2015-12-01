@@ -1,5 +1,6 @@
 .rpt {
   position: fixed;
+  font-family: "Open sans";
 }
 
 .rpt .rpt-overlay {
@@ -39,6 +40,9 @@
   border-radius: 4px;
   background: #fff;
 }
+.rpt .rpt-modal.rpt-active p {
+  background: white;
+}
 
 .rpt .rpt-modal button {
   border: none;
@@ -63,6 +67,7 @@
   border: 16px solid #fff;
   content: '';
   position: absolute;
+  background: transparent;
 }
 .rpt .rpt-arrow.rpt-arrow-top {
   top: -32px;
